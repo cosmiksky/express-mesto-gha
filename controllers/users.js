@@ -13,13 +13,12 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
 	const { userId } = req.params;
 	User.findById(userId)
-		.then( user => {
+		.then( user => res.send(user))
+		.catch((user) => {
 			if(!user) {
 				res.status(400).send({ message: 'Пользователь не найден' });
 			}
-			res.send(user);
-		})
-		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+			res.status(500).send({ message: 'Произошла ошибка' });});
 };
 
 module.exports.createUsers = (req, res) => {

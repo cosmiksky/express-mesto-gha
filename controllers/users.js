@@ -9,25 +9,25 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
 	const { userId } = req.params;
 	User.findById(userId)
-		.then( user => res.send(user))
-		.catch(() => {
+		.then( user => {
 			if(!userId) {
 				res.status(404).send({ message: 'Пользователь не найден' });
 			}
-			res.status(400).send({ message: 'Переданы некорректные данные пользователя' });});
+			res.send({data: user});})
+		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные пользователя' }));
 };
 
 module.exports.createUsers = (req, res) => {
 	const { name, about, avatar } = req.body;
 	User.create({ name, about, avatar })
-		.then( user => res.send(user))
+		.then( user => res.send({data: user}))
 		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' }));
 };
 
 module.exports.updateUser = (req, res) => {
 	const { name, about } = req.body;
 	User.findByIdAndUpdate(req.params.id, { name, about })
-		.then(user => res.status(200).send( user )
+		.then(user => res.status(200).send({data: user})
 		)
 		.catch(() => res.status(404).send({ message: 'Пользователь не найден' }));
 };
@@ -35,6 +35,6 @@ module.exports.updateUser = (req, res) => {
 module.exports.updateAvatar = (req, res) => {
 	const { avatar } = req.body;
 	User.findByIdAndUpdate(req.params.id, { avatar })
-		.then( user => res.send( user ))
+		.then( user => res.send({data: user}))
 		.catch(() => res.status(404).send({ message: 'Пользователь не найден' }));
 };

@@ -3,7 +3,7 @@ const User = require('../models/users');
 module.exports.getUsers = (req, res) => {
     User.find({})
       .then(users => {
-        if(!user) {
+        if(!users) {
           res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' })
         }
         res.send(users)})

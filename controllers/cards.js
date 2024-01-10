@@ -23,7 +23,7 @@ module.exports.deleteCard = (req, res) => {
             res.status(404).send({ message: 'Карточка не найдена' });
         }
         res.send({ message: 'Карточка успешно удалена' })})
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
 
 module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(

@@ -43,7 +43,7 @@ module.exports.updateUser = (req, res) => {
         }
       res.send( user )
     })
-      .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+      .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
 
 module.exports.updateAvatar = (req, res) => {
@@ -54,5 +54,5 @@ module.exports.updateAvatar = (req, res) => {
           res.status(404).send({ message: 'Пользователь не найден' })
         }
         res.send( user )})
-      .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+      .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }

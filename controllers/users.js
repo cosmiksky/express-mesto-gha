@@ -2,23 +2,15 @@ const User = require('../models/users');
 
 module.exports.getUsers = (req, res) => {
 	User.find({})
-		.then(users => {
-			if(!users) {
-				res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
-			}
-			res.send(users);})
-		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+		.then(users => res.send(users))
+		.catch(() => res.status(404).send({ message: 'Пользователь не найден' }));
 };
 
 module.exports.getUserById = (req, res) => {
 	const { userId } = req.params;
 	User.findById(userId)
 		.then( user => res.send(user))
-		.catch((user) => {
-			if(!user) {
-				res.status(400).send({ message: 'Пользователь не найден' });
-			}
-			res.status(500).send({ message: 'Произошла ошибка' });});
+		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные пользователя' }));
 };
 
 module.exports.createUsers = (req, res) => {

@@ -15,7 +15,7 @@ module.exports.getUserById = (req, res) => {
 	User.findById(userId)
 		.then( user => {
 			if(!user) {
-				res.status(404).send({ message: 'Пользователь не найден' });
+				res.status(400).send({ message: 'Пользователь не найден' });
 			}
 			res.send(user);
 		})
@@ -39,9 +39,9 @@ module.exports.updateUser = (req, res) => {
 	User.findByIdAndUpdate(req.params.id, { name, about })
 		.then(user => {
 			if(!user) {
-				res.status(404).send({ message: 'Пользователь не найден' });
+				res.status(400).send({ message: 'Пользователь не найден' });
 			}
-			res.send( user );
+			res.status(200).send( user );
 		})
 		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
@@ -51,7 +51,7 @@ module.exports.updateAvatar = (req, res) => {
 	User.findByIdAndUpdate(req.params.id, { avatar })
 		.then( user => {
 			if(!user) {
-				res.status(404).send({ message: 'Пользователь не найден' });
+				res.status(400).send({ message: 'Пользователь не найден' });
 			}
 			res.send( user );})
 		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));

@@ -4,14 +4,14 @@ module.exports.createCard = (req, res) => {
 	console.log(req.user._id); // _id станет доступен
 	const { name, link } = req.body;
 	Card.create({ name, link })
-		.then(card => res.send(card))
+		.then(card => res.status(200).send(card))
 		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки' }));
 
 };
 
 module.exports.getCards = (req, res) => {
 	Card.find({})
-		.then(card => res.send(card))
+		.then(card => res.status(200).send(card))
 		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 

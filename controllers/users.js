@@ -25,11 +25,7 @@ module.exports.createUsers = (req, res) => {
 	const { name, about, avatar } = req.body;
 	User.create({ name, about, avatar })
 		.then( user => res.send(user))
-		.catch((user) => {
-			if(!user) {
-				res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
-			}
-			res.status(500).send({ message: 'Произошла ошибка' });});
+		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' }));
 };
 
 module.exports.updateUser = (req, res) => {
@@ -37,20 +33,12 @@ module.exports.updateUser = (req, res) => {
 	User.findByIdAndUpdate(req.params.id, { name, about })
 		.then(user => res.status(200).send( user )
 		)
-		.catch((user) => {
-			if(!user) {
-				res.status(404).send({ message: 'Пользователь не найден' });
-			}
-			res.status(500).send({ message: 'Произошла ошибка' });});
+		.catch(() => res.status(404).send({ message: 'Пользователь не найден' }));
 };
 
 module.exports.updateAvatar = (req, res) => {
 	const { avatar } = req.body;
 	User.findByIdAndUpdate(req.params.id, { avatar })
 		.then( user => res.send( user ))
-		.catch((user) => {
-			if(!user) {
-				res.status(400).send({ message: 'Пользователь не найден' });
-			}
-			res.status(500).send({ message: 'Произошла ошибка' });});
+		.catch(() => res.status(404).send({ message: 'Пользователь не найден' }));
 };

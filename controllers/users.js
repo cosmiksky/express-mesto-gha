@@ -7,9 +7,9 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-	const userId  = req.params || req.user._id;
+	const {userId}  = req.params;
 	User.findById(userId)
-		.then( user => {
+		.then( (user) => {
 			if(!user) {
 				res.status(404).send({ message: 'Пользователь не найден' });
 			}

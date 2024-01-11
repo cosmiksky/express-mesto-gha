@@ -4,7 +4,7 @@ module.exports.createCard = (req, res) => {
 	console.log(req.user._id); // _id станет доступен
 	const { name, link } = req.body;
 	Card.create({ name, link })
-		.then(card => res.status(200).send(card))
+		.then(card => res.status(200).send({ data: card }))
 		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки' }));
 
 };

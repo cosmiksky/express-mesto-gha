@@ -16,8 +16,7 @@ app.use((req, res, next) => {
 	next();
 });
 
-// подключаемся к серверу mongo
-mongoose.connect('mongodb://localhost:27017/mestodb')
+mongoose.connect('mongodb://0.0.0.0:27017/mestodb')
 	.then(() => console.log('successful'));
 
 app.use('/users', require('./routes/users'));

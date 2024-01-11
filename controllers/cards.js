@@ -11,8 +11,8 @@ module.exports.createCard = (req, res) => {
 
 module.exports.getCards = (req, res) => {
 	Card.find({})
-		.then(card => res.status(200).send(card))
-		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+		.then(cards => res.send(cards))
+		.catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
 };
 
 module.exports.deleteCard = (req, res) => {

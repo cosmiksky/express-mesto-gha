@@ -26,7 +26,8 @@ module.exports.createUsers = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
 	const { name, about } = req.body;
-	User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+	const { userId } = req.params;
+	User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
 		.then( user => res.send({ name: user.name, about: user.about }))
 		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
 };

@@ -26,18 +26,14 @@ module.exports.createUsers = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
 	const { name, about } = req.body;
-	User.findByIdAndUpdate(req.params.id, { name, about })
-		.then( user => {
-			if(!user) {
-				res.status(404).send({ message: 'Пользователь не найден' });
-			}
-			res.send({data: user});})
-		.catch(() => res.status(404).send({ message: 'Пользователь не найден' }));
+	User.findByIdAndUpdate(req.user.id, { name, about })
+		.then( user => res.send(user))
+		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
 };
 
 module.exports.updateAvatar = (req, res) => {
 	const { avatar } = req.body;
-	User.findByIdAndUpdate(req.params.id, { avatar })
+	User.findByIdAndUpdate(req.user.id, { avatar })
 		.then( user => res.send(user))
-		.catch(() => res.status(404).send({ message: 'Пользователь не найден' }));
+		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
 };

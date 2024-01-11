@@ -7,16 +7,13 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-	const userId  = req.user._id;
+	const userId  = req.params.userId || req.user._id;
 	User.findById(userId)
 		.then( user => {
 			if(!user) {
 				res.status(404).send({ message: 'Пользователь не найден' });
 			}
-			res.send({
-				name: user.name,
-				about: user.about,
-				avatar: user.avatar,});})
+			res.send(user);})
 		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные пользователя' }));
 };
 

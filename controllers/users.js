@@ -9,12 +9,12 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
 	const {userId}  = req.params;
 	User.findById(userId)
-		.then( (user) => {
+		.then((user) => res.send(user))
+		.catch((user) => {
 			if(!user) {
 				res.status(404).send({ message: 'Пользователь не найден' });
 			}
-			res.send(user);})
-		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные пользователя' }));
+			res.status(400).send({ message: 'Переданы некорректные данные пользователя' });});
 };
 
 module.exports.createUsers = (req, res) => {

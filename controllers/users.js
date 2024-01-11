@@ -10,7 +10,7 @@ module.exports.getUserById = (req, res) => {
 	const {userId}  = req.params;
 	User.findById(userId)
 		.then((user) => res.send(user))
-		.catch((res) =>
+		.catch(() =>
 			res.status(400).send({ message: 'Переданы некорректные данные пользователя' })
 		);
 };

@@ -20,7 +20,7 @@ module.exports.getUserById = (req, res, next) => {
 			if(user) {
 				res.send(user);
 			} else {
-				throw new Error('Пользователь по переданному id не найден');
+				res.status(404).send({ message: 'Пользователь не найден' });
 			}
 		})
 		.catch((err) => {
@@ -45,11 +45,18 @@ module.exports.createUsers = (req, res, next) => {
 		});
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
 	const { name, about } = req.body;
-	User.findByIdAndUpdate(req.params, { name, about }, { new: true, runValidators: true })
-		.then( user => res.send({ name: user.name, about: user.about }))
-		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
+	const { userId }  = req.params;
+	User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
+		.then( user => res.status(200).send({ data: user }))
+		.catch((err) => {
+			if(err) {
+				res.status(400).send({ message: 'Переданы некорректные данные' });
+			} else {
+				next(err);
+			}
+		});
 };
 
 module.exports.updateAvatar = (req, res) => {

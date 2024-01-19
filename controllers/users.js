@@ -14,7 +14,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-	const userId  = req.params;
+	const {userId}  = req.params;
 	User.findById(userId)
 		.then((user) => {
 			if(user) {
@@ -24,7 +24,11 @@ module.exports.getUserById = (req, res, next) => {
 			}
 		})
 		.catch((err) => {
-			next(err);
+			if(err) {
+				res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+			} else {
+				next(err);
+			}
 		});
 };
 

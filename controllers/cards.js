@@ -2,7 +2,8 @@ const Card = require('../models/cards');
 
 module.exports.createCard = (req, res, next) => {
 	const { name, link } = req.body;
-	Card.create({ name, link })
+	const owner = req.user._id;
+	Card.create({ name, link, owner })
 		.then(card => res.status(200).send(card))
 		.catch((err) => {
 			if(err) {
@@ -34,7 +35,7 @@ module.exports.deleteCard = (req, res) => {
 				res.status(404).send({ message: 'Карточка не найдена' });
 			}
 			res.send({ message: 'Карточка успешно удалена' });})
-		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -43,10 +44,10 @@ module.exports.likeCard = (req, res, next) => {
 		{ $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
 		{ new: true },
 	)
-		.then((card) => res.status(200).send(card))
+		.then((likes) => res.status(200).send({ data: likes }))
 		.catch((err) => {
 			if(err) {
-				res.status(500).send({ message: 'Произошла ошибка' });
+				res.status(400).send({ message: 'Переданы некорректные данные' });
 			} else {
 				next(err);
 			}
@@ -59,10 +60,10 @@ module.exports.dislikeCard = (req, res, next) => {
 		{ $pull: { likes: req.user._id } }, // убрать _id из массива
 		{ new: true },
 	)
-		.then((card) => res.status(200).send(card))
+		.then((likes) => res.status(200).send({ data: likes }))
 		.catch((err) => {
 			if(err) {
-				res.status(500).send({ message: 'Произошла ошибка' });
+				res.status(400).send({ message: 'Переданы некорректные данные' });
 			} else {
 				next(err);
 			}

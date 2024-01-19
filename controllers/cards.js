@@ -1,18 +1,29 @@
 const Card = require('../models/cards');
 
-module.exports.createCard = (req, res) => {
-	console.log(req.user._id); // _id станет доступен
+module.exports.createCard = (req, res, next) => {
 	const { name, link } = req.body;
 	Card.create({ name, link })
-		.then(card => res.status(200).send({ data: card }))
-		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки' }));
+		.then(card => res.status(200).send(card))
+		.catch((err) => {
+			if(err) {
+				res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
+			} else {
+				next(err);
+			}
+		});
 
 };
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
 	Card.find({})
 		.then(cards => res.send(cards))
-		.catch(() => res.status(404).send({ message: 'Карточка не найдена' }));
+		.catch((err) => {
+			if(err) {
+				res.status(404).send({ message: 'Карточка не найдена' });
+			} else {
+				next(err);
+			}
+		});
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -26,22 +37,34 @@ module.exports.deleteCard = (req, res) => {
 		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
 	Card.findByIdAndUpdate(
-		req.user.cardId,
+		req.params.cardId,
 		{ $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
 		{ new: true },
 	)
-		.then(() => res.status(200))
-		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+		.then((card) => res.status(200).send(card))
+		.catch((err) => {
+			if(err) {
+				res.status(500).send({ message: 'Произошла ошибка' });
+			} else {
+				next(err);
+			}
+		});
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
 	Card.findByIdAndUpdate(
-		req.user.cardId,
+		req.params.cardId,
 		{ $pull: { likes: req.user._id } }, // убрать _id из массива
 		{ new: true },
 	)
-		.then(() => res.status(200))
-		.catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+		.then((card) => res.status(200).send(card))
+		.catch((err) => {
+			if(err) {
+				res.status(500).send({ message: 'Произошла ошибка' });
+			} else {
+				next(err);
+			}
+		});
 };

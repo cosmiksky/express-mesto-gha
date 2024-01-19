@@ -47,7 +47,7 @@ module.exports.createUsers = (req, res, next) => {
 
 module.exports.updateUser = (req, res, next) => {
 	const { name, about } = req.body;
-	const { userId }  = req.params;
+	const userId = req.user._id;
 	User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
 		.then( user => res.status(200).send(user))
 		.catch((err) => {
@@ -59,10 +59,16 @@ module.exports.updateUser = (req, res, next) => {
 		});
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
 	const { avatar } = req.body;
-	const { userId }  = req.params;
+	const userId = req.user._id;
 	User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
 		.then( user => res.status(200).send(user))
-		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
+		.catch((err) => {
+			if(err) {
+				res.status(400).send({ message: 'Переданы некорректные данные' });
+			} else {
+				next(err);
+			}
+		});
 };

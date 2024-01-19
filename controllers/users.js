@@ -49,7 +49,7 @@ module.exports.updateUser = (req, res, next) => {
 	const { name, about } = req.body;
 	const { userId }  = req.params;
 	User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
-		.then( user => res.status(200).send({ data: user }))
+		.then( user => res.status(200).send(user))
 		.catch((err) => {
 			if(err) {
 				res.status(400).send({ message: 'Переданы некорректные данные' });
@@ -61,7 +61,8 @@ module.exports.updateUser = (req, res, next) => {
 
 module.exports.updateAvatar = (req, res) => {
 	const { avatar } = req.body;
-	User.findByIdAndUpdate(req.params, { avatar }, { new: true, runValidators: true })
-		.then( user => res.send(user))
+	const { userId }  = req.params;
+	User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
+		.then( user => res.status(200).send(user))
 		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
 };

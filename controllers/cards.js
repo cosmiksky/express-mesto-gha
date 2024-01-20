@@ -2,8 +2,8 @@ const Card = require('../models/cards');
 
 module.exports.createCard = (req, res, next) => {
 	const { name, link } = req.body;
-	const ownerId = req.user._id;
-	Card.create({ name, link, ownerId })
+	const userId = req.user._id;
+	Card.create({ name, link, owner: userId })
 		.then(card => res.status(200).send({ data: card }))
 		.catch((err) => {
 			if(err) {
@@ -28,8 +28,7 @@ module.exports.getCards = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-	const { cardId } = req.params;
-	Card.findByIdAndDelete(cardId)
+	Card.findByIdAndDelete(req.params.cardId)
 		.then(card => {
 			if(card) {
 				res.send({ data: card });

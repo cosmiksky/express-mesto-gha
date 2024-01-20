@@ -1,9 +1,9 @@
 const Card = require('../models/cards');
 
 module.exports.createCard = (req, res, next) => {
-	const { name, link } = req.body;
-	const userId = req.user._id;
-	Card.create({ name, link, userId })
+	const cardData = req.body;
+	cardData.owner = req.user._id;
+	Card.create(cardData)
 		.then(card => res.status(200).send({ data: card }))
 		.catch((err) => {
 			if(err) {
@@ -46,8 +46,9 @@ module.exports.deleteCard = (req, res, next) => {
 };
 
 module.exports.likeCard = (req, res, next) => {
+	const { cardId } = req.params;
 	Card.findByIdAndUpdate(
-		req.params.cardId,
+		cardId,
 		{ $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
 		{ new: true },
 	)
@@ -69,8 +70,9 @@ module.exports.likeCard = (req, res, next) => {
 };
 
 module.exports.dislikeCard = (req, res, next) => {
+	const { cardId } = req.params;
 	Card.findByIdAndUpdate(
-		req.params.cardId,
+		cardId,
 		{ $pull: { likes: req.user._id } }, // убрать _id из массива
 		{ new: true },
 	)

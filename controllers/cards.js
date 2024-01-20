@@ -27,27 +27,34 @@ module.exports.getCards = (req, res, next) => {
 		});
 };
 
-module.exports.deleteCard = (req, res) => {
-	const { cardId } = req.params;
-	Card.findByIdAndDelete({_id: cardId})
+module.exports.deleteCard = (req, res, next) => {
+	const {cardId} = req.params;
+	Card.findByIdAndDelete(cardId)
 		.then(card => {
-			if(!card) {
+			if(card) {
+				res.send({ message: 'Карточка успешно удалена' });
+			} else {
 				res.status(404).send({ message: 'Карточка не найдена' });
 			}
-			res.send({ message: 'Карточка успешно удалена' });})
-		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
+		})
+		.catch((err) => {
+			if(err) {
+				res.status(400).send({ message: 'Переданы некорректные данные' });
+			} else {
+				next(err);
+			}
+		});
 };
 
 module.exports.likeCard = (req, res, next) => {
-	const { id } = req.params;
 	Card.findByIdAndUpdate(
-		id,
-		{ $addToSet: { likes: id } }, // добавить _id в массив, если его там нет
+		req.params.id,
+		{ $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
 		{ new: true },
 	)
 		.then((card) => {
 			if(card) {
-				res.status(200).send({ data: card });
+				res.status(200).send(card);
 			} else {
 				res.status(404).send({ message: 'Карточка не найдена' });
 			}
@@ -63,15 +70,14 @@ module.exports.likeCard = (req, res, next) => {
 };
 
 module.exports.dislikeCard = (req, res, next) => {
-	const { id } = req.params;
 	Card.findByIdAndUpdate(
-		id,
-		{ $pull: { likes: id } }, // убрать _id из массива
+		req.params.id,
+		{ $pull: { likes: req.user._id } }, // убрать _id из массива
 		{ new: true },
 	)
 		.then((card) => {
 			if(card) {
-				res.status(200).send({ data: card });
+				res.status(200).send(card);
 			} else {
 				res.status(404).send({ message: 'Карточка не найдена' });
 			}

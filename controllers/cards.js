@@ -32,7 +32,7 @@ module.exports.deleteCard = (req, res, next) => {
 	Card.findByIdAndDelete(cardId)
 		.then(card => {
 			if(card) {
-				res.send({ message: 'Карточка успешно удалена' });
+				res.send({ data: card });
 			} else {
 				res.status(404).send({ message: 'Карточка не найдена' });
 			}
@@ -48,13 +48,13 @@ module.exports.deleteCard = (req, res, next) => {
 
 module.exports.likeCard = (req, res, next) => {
 	Card.findByIdAndUpdate(
-		req.params.id,
+		req.params.cardId,
 		{ $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
 		{ new: true },
 	)
 		.then((card) => {
 			if(card) {
-				res.status(200).send(card);
+				res.status(200).send({ data: card });
 			} else {
 				res.status(404).send({ message: 'Карточка не найдена' });
 			}
@@ -71,7 +71,7 @@ module.exports.likeCard = (req, res, next) => {
 
 module.exports.dislikeCard = (req, res, next) => {
 	Card.findByIdAndUpdate(
-		req.params.id,
+		req.params.cardId,
 		{ $pull: { likes: req.user._id } }, // убрать _id из массива
 		{ new: true },
 	)

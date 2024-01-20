@@ -27,7 +27,8 @@ module.exports.getCards = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-	Card.findByIdAndDelete(req.params.cardId)
+	const { cardId } = req.params;
+	Card.findByIdAndDelete(cardId)
 		.then(card => {
 			if(card) {
 				res.send({ data: card });

@@ -28,7 +28,7 @@ module.exports.getCards = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-	const {cardId} = req.params;
+	const { cardId } = req.params;
 	Card.findByIdAndDelete(cardId)
 		.then(card => {
 			if(card) {

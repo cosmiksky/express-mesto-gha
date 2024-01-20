@@ -1,10 +1,10 @@
 const Card = require('../models/cards');
 
 module.exports.createCard = (req, res, next) => {
-	const cardData = req.body;
-	cardData.owner = req.user._id;
-	Card.create(cardData)
-		.then(card => res.status(200).send({ data: card }))
+	const { name, link } = req.body;
+	const userId = req.user._id;
+	Card.create({ name, link, owner: userId })
+		.then(card => res.status(201).send(card))
 		.catch((err) => {
 			if(err) {
 				res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });

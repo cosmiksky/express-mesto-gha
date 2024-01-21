@@ -1,51 +1,50 @@
 const Card = require('../models/cards');
+const BadRequestError = require('../errors/BadRequest');
+const ServerError = require('../errors/ServerError');
+const NotFoundError = require('../errors/NotFound');
 
-module.exports.createCard = (req, res, next) => {
+module.exports.createCard = (req, res) => {
 	const { name, link } = req.body;
 	const userId = req.user._id;
 	Card.create({ name, link, owner: userId })
 		.then(card => res.status(201).send(card))
 		.catch((err) => {
-			if(err) {
-				res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
+			if(err.name === 'ValidationError') {
+				throw new BadRequestError('Переданы некорректные данные при создании карточки');
 			} else {
-				next(err);
+				throw new ServerError('Ошибка сервера');
 			}
 		});
 };
 
-module.exports.getCards = (req, res, next) => {
+module.exports.getCards = (req, res) => {
 	Card.find({})
 		.then(cards => res.send(cards))
-		.catch((err) => {
-			if(err) {
-				res.status(404).send({ message: 'Карточка не найдена' });
-			} else {
-				next(err);
-			}
+		.catch(() => {
+			throw new ServerError('Ошибка сервера');
 		});
 };
 
-module.exports.deleteCard = (req, res, next) => {
+module.exports.deleteCard = (req, res) => {
 	const { cardId } = req.params;
 	Card.findByIdAndDelete(cardId)
 		.then(card => {
 			if(card) {
 				res.send({ data: card });
 			} else {
-				res.status(404).send({ message: 'Карточка не найдена' });
+				throw new NotFoundError('Карточка или пользователь не найден');
 			}
 		})
 		.catch((err) => {
-			if(err) {
-				res.status(400).send({ message: 'Переданы некорректные данные' });
+			if(err.name === 'CastError') {
+				throw new BadRequestError('Переданы некорректные данные');
 			} else {
-				next(err);
+				throw new ServerError('Ошибка сервера');
 			}
 		});
 };
 
-module.exports.likeCard = (req, res, next) => {
+module.exports.likeCard = (req, res) => {
 	const { cardId } = req.params;
 	Card.findByIdAndUpdate(
 		cardId,
@@ -56,20 +55,19 @@ module.exports.likeCard = (req, res, next) => {
 			if(card) {
 				res.status(200).send({ data: card });
 			} else {
-				res.status(404).send({ message: 'Карточка не найдена' });
+				throw new NotFoundError('Карточка или пользователь не найден');
 			}
 		})
-
 		.catch((err) => {
-			if(err) {
-				res.status(400).send({ message: 'Переданы некорректные данные' });
+			if(err.name === 'CastError') {
+				throw new BadRequestError('Переданы некорректные данные');
 			} else {
-				next(err);
+				throw new ServerError('Ошибка сервера');
 			}
 		});
 };
 
-module.exports.dislikeCard = (req, res, next) => {
+module.exports.dislikeCard = (req, res) => {
 	const { cardId } = req.params;
 	Card.findByIdAndUpdate(
 		cardId,
@@ -80,14 +78,14 @@ module.exports.dislikeCard = (req, res, next) => {
 			if(card) {
 				res.status(200).send(card);
 			} else {
-				res.status(404).send({ message: 'Карточка не найдена' });
+				throw new NotFoundError('Карточка или пользователь не найден');
 			}
 		})
 		.catch((err) => {
-			if(err) {
-				res.status(400).send({ message: 'Переданы некорректные данные' });
+			if(err.name === 'CastError') {
+				throw new BadRequestError('Переданы некорректные данные');
 			} else {
-				next(err);
+				throw new ServerError('Ошибка сервера');
 			}
 		});
 };

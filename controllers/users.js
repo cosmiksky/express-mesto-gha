@@ -1,73 +1,71 @@
 const User = require('../models/users');
-//const mongoose = require('mongoose');
-const BadRequestError = require('../errors/BadRequest');
-const ServerError = require('../errors/ServerError');
-const NotFoundError = require('../errors/NotFound');
+const BadRequest = require('../errors/BadRequest');
+const NotFound = require('../errors/NotFound');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
 	User.find({})
 		.then(users => res.send(users))
-		.catch(() => {
-			throw new ServerError('Ошибка сервера');
+		.catch((err) => {
+			next(err);
 		});
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
 	const {userId}  = req.params;
 	User.findById(userId)
 		.then((user) => {
 			if(user) {
 				res.send(user);
 			} else {
-				throw new NotFoundError('Карточка или пользователь не найден');
+				next(new NotFound('Пользователь не найден'));
 			}
 		})
 		.catch((err) => {
 			if(err) {
-				throw new BadRequestError('Переданы некорректные данные при создании пользователя');
+				next(new BadRequest('Переданы некорректные данные при создании пользователя'));
 			} else {
-				throw new ServerError('Ошибка сервера');
+				next(err);
 			}
 		});
 };
 
-module.exports.createUsers = (req, res) => {
+module.exports.createUsers = (req, res, next) => {
 	const { name, about, avatar } = req.body;
 	User.create({ name, about, avatar })
 		.then( user => res.send(user))
 		.catch((err) => {
 			if(err) {
-				throw new BadRequestError('Переданы некорректные данные при создании пользователя');
+				next(new BadRequest('Переданы некорректные данные при создании пользователя'));
 			} else {
-				throw new ServerError('Ошибка сервера');
+				next(err);
 			}
 		});
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
 	const { name, about } = req.body;
 	const userId = req.user._id;
 	User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
 		.then( user => res.status(200).send(user))
 		.catch((err) => {
 			if(err) {
-				throw new BadRequestError('Переданы некорректные данные при обновлении пользователя');
+				next(new BadRequest('Переданы некорректные данные при обновлении пользователя'));
 			} else {
-				throw new ServerError('Ошибка сервера');
+				next(err);
 			}
 		});
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
 	const { avatar } = req.body;
 	const userId = req.user._id;
 	User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
 		.then( user => res.status(200).send(user))
 		.catch((err) => {
 			if(err) {
-				throw new BadRequestError('Переданы некорректные данные при обновлении аватара');
+				next(new BadRequest('Переданы некорректные данные при обновлении аватара'));
 			} else {
-				throw new ServerError('Ошибка сервера');
+				next(err);
 			}
 		});
 };

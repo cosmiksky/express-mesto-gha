@@ -1,6 +1,4 @@
-const errorMain = require('./errorMain');
-
-class NotFound extends errorMain {
+class NotFound extends Error {
 	constructor(message) {
 		super(message);
 		this.statusCode = 404;

@@ -1,6 +1,4 @@
-const errorMain = require('./errorMain');
-
-class BadRequest extends errorMain {
+class BadRequest extends Error {
 	constructor(message) {
 		super(message);
 		this.statusCode = 400;

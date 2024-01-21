@@ -1,8 +1,9 @@
-class errorMain extends Error {
-	constructor(message = 'Ошибка сервера') {
-		super(message);
-		this.statusCode = 500;
-	}
-}
+const errorMain = (err, req, res, next) => {
+	const { statusCode = 500, message } = err;
+
+	res.status(statusCode).send({message: statusCode === 500 ? 'Ошибка сервера' : message});
+
+	next();
+};
 
 module.exports = errorMain;

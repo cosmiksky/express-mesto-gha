@@ -1,5 +1,5 @@
 const Card = require('../models/cards');
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 const BadRequestError = require('../errors/BadRequest');
 const ServerError = require('../errors/ServerError');
 const NotFoundError = require('../errors/NotFound');
@@ -10,7 +10,7 @@ module.exports.createCard = (req, res) => {
 	Card.create({ name, link, owner: userId })
 		.then(card => res.status(201).send(card))
 		.catch((err) => {
-			if(err instanceof mongoose.Error.ValidationError) {
+			if(err) {
 				throw new BadRequestError('Переданы некорректные данные при создании карточки');
 			} else {
 				throw new ServerError('Ошибка сервера');
@@ -37,7 +37,7 @@ module.exports.deleteCard = (req, res) => {
 			}
 		})
 		.catch((err) => {
-			if(err instanceof mongoose.Error.CastError) {
+			if(err) {
 				throw new BadRequestError('Переданы некорректные данные');
 			} else {
 				throw new ServerError('Ошибка сервера');
@@ -60,7 +60,7 @@ module.exports.likeCard = (req, res) => {
 			}
 		})
 		.catch((err) => {
-			if(err instanceof mongoose.Error.CastError) {
+			if(err) {
 				throw new BadRequestError('Переданы некорректные данные');
 			} else {
 				throw new ServerError('Ошибка сервера');
@@ -83,7 +83,7 @@ module.exports.dislikeCard = (req, res) => {
 			}
 		})
 		.catch((err) => {
-			if(err instanceof mongoose.Error.CastError) {
+			if(err) {
 				throw new BadRequestError('Переданы некорректные данные');
 			} else {
 				throw new ServerError('Ошибка сервера');

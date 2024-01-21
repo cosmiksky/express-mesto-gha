@@ -1,3 +1,4 @@
+const { HTTP_STATUS_OK } = require('http2').constants;
 const Card = require('../models/cards');
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
@@ -6,7 +7,7 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const userId = req.user._id;
   Card.create({ name, link, owner: userId })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(HTTP_STATUS_OK).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequest('Переданы некорректные данные при создании карточки'));
@@ -50,7 +51,7 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card) {
-        res.status(200).send({ data: card });
+        res.status(HTTP_STATUS_OK).send({ data: card });
       } else {
         next(new NotFound('Карточка не найдена'));
       }
@@ -73,7 +74,7 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card) {
-        res.status(200).send(card);
+        res.status(HTTP_STATUS_OK).send(card);
       } else {
         next(new NotFound('Карточка не найдена'));
       }

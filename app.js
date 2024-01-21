@@ -25,7 +25,7 @@ app.use('/cards', require('./routes/cards'));
 app.use('*', () => {
 	throw new NotFound('Страница не найдена');
 });
-app.use(errorMain);
+app.use(errorMain); // централизованный обработчик
 
 app.listen(PORT, () => {
 	console.log(`App listening on port ${PORT}`);

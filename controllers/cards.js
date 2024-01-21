@@ -8,7 +8,7 @@ module.exports.createCard = (req, res, next) => {
 	Card.create({ name, link, owner: userId })
 		.then(card => res.status(201).send(card))
 		.catch((err) => {
-			if(err) {
+			if(err.name === 'ValidationError') {
 				next(new BadRequest('Переданы некорректные данные при создании карточки'));
 			} else {
 				next(err);
@@ -33,7 +33,7 @@ module.exports.deleteCard = (req, res, next) => {
 			}
 		})
 		.catch((err) => {
-			if(err) {
+			if(err.name === 'CastError') {
 				next(new BadRequest('Переданы некорректные данные карточки'));
 			} else {
 				next(err);
@@ -55,9 +55,8 @@ module.exports.likeCard = (req, res, next) => {
 				next(new NotFound('Карточка не найдена'));
 			}
 		})
-
 		.catch((err) => {
-			if(err) {
+			if(err.name === 'CastError') {
 				next(new BadRequest('Переданы некорректные данные карточки'));
 			} else {
 				next(err);
@@ -80,7 +79,7 @@ module.exports.dislikeCard = (req, res, next) => {
 			}
 		})
 		.catch((err) => {
-			if(err) {
+			if(err.name === 'CastError') {
 				next(new BadRequest('Переданы некорректные данные карточки'));
 			} else {
 				next(err);
